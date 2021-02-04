@@ -1,0 +1,96 @@
+#!/bin/bash
+
+RED="\e[31m"
+GREEN="\e[32m"
+NORMAL="\e[0m"
+
+print_choice() {
+    color="${RED}"
+    if [ "${selected_choices[$1]}" = "1" ]; then
+        color="${GREEN}"
+    fi
+
+    echo -e "${1}) ${color}${choices[$1]}${NORMAL}" 1>&2
+}
+
+print_menu() {
+    printf "\033c" 1>&2
+    i=0
+    for choice in "${choices[@]}"; do
+        print_choice "$i"
+        ((i++))
+    done
+}
+
+toggle_choice() {
+    if [ "${selected_choices[$1]}" = "1" ]; then
+        selected_choices[$1]="0"
+    else
+        selected_choices[$1]="1"
+    fi
+}
+
+print_result() {
+    i=0
+    for choice in "${choices[@]}"; do
+        if [ "${selected_choices[$i]}" = "1" ]; then
+            echo "${choices[$i]}"
+        fi
+        ((i++))
+    done
+}
+
+print_help() {
+    echo "placeholder"
+}
+
+choices=()
+selected_choices=()
+
+# Menuify Options
+no_clear=0
+no_color=0
+multi_select=0
+confirm=0
+
+# Parse arguments
+ignore_flags=0
+while [ $# -gt 0 ]; do
+    if [ "$ignore_flags" = "1" ]; then
+        choices+=( "$1" )
+        selected_choices+=( 0 )
+    elif [ "$1" = "--" ]; then
+        ignore_flags=1
+    elif [ "$1" = "--help" ]; then
+        print_help && exit 0
+    elif [ "$1" = "--multi" ]; then
+        multi_select=1
+    elif [ "$1" = "--no-clear" ]; then
+        no_clear=1
+    elif [ "$1" = "--no-color" ]; then
+        no_color=1
+    else
+        choices+=( "$1" )
+        selected_choices+=( 0 )
+    fi
+
+    shift
+done
+
+while true; do
+    print_menu
+
+    read -n 1 response
+
+    if [ "$response" = "" ]; then
+        break
+    fi
+
+    toggle_choice "$response"
+
+    if [ "$multi_select" != "1" ]; then
+        break
+    fi
+done
+
+print_result
