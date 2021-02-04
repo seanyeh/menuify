@@ -80,7 +80,7 @@ done
 while true; do
     print_menu
 
-    read -n 1 response
+    read -s -n 1 response
 
     if [ "$response" = "" ]; then
         break
