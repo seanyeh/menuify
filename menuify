@@ -14,7 +14,8 @@ print_choice() {
 }
 
 print_menu() {
-    printf "\033c" 1>&2
+    [ "$no_clear" = "0" ] && printf "\033c" 1>&2
+
     i=0
     for choice in "${choices[@]}"; do
         print_choice "$i"
