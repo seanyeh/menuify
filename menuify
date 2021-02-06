@@ -42,6 +42,7 @@ print_result() {
 
 print_help() {
     echo "placeholder"
+    exit 0
 }
 
 choices=()
@@ -62,7 +63,7 @@ while [ $# -gt 0 ]; do
     elif [ "$1" = "--" ]; then
         ignore_flags=1
     elif [ "$1" = "--help" ]; then
-        print_help && exit 0
+        print_help
     elif [ "$1" = "--multi" ]; then
         multi_select=1
     elif [ "$1" = "--no-clear" ]; then
@@ -76,6 +77,10 @@ while [ $# -gt 0 ]; do
 
     shift
 done
+
+if [ "${#choices[@]}" = "0" ]; then
+    print_help
+fi
 
 while true; do
     print_menu
