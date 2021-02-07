@@ -10,7 +10,12 @@ print_choice() {
         color="${GREEN}"
     fi
 
-    printf "${1}) ${color}${choices[$1]}${NORMAL}\n" 1>&2
+    printf "${1}) ${color}"
+
+    # Print choice text literally
+    printf "%s" "${choices[$1]}"
+
+    printf "${NORMAL}\n" 1>&2
 }
 
 print_menu() {
