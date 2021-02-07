@@ -51,6 +51,16 @@ print_help() {
 choices=()
 selected_choices=()
 
+# Load options from stdin
+while IFS='$\n' read -r line; do
+    choices+=( "${line}" )
+    selected_choices+=( 0 )
+done
+
+# Reset stdin
+exec 6<&0
+exec 0</dev/tty
+
 # Menuify Options
 no_clear=0
 no_color=0
@@ -58,14 +68,8 @@ multi_select=0
 confirm=0
 
 # Parse arguments
-ignore_flags=0
 while [ $# -gt 0 ]; do
-    if [ "$ignore_flags" = "1" ]; then
-        choices+=( "$1" )
-        selected_choices+=( 0 )
-    elif [ "$1" = "--" ]; then
-        ignore_flags=1
-    elif [ "$1" = "--help" ]; then
+    if [ "$1" = "--help" ]; then
         print_help
     elif [ "$1" = "--multi" ]; then
         multi_select=1
@@ -73,9 +77,6 @@ while [ $# -gt 0 ]; do
         no_clear=1
     elif [ "$1" = "--no-color" ]; then
         no_color=1
-    else
-        choices+=( "$1" )
-        selected_choices+=( 0 )
     fi
 
     shift
