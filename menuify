@@ -21,6 +21,8 @@ print_menu() {
         print_choice "$i"
         ((i++))
     done
+
+    printf "\nEnter selection:\n" 1>&2
 }
 
 toggle_choice() {
