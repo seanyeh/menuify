@@ -37,7 +37,7 @@ print_result() {
     i=0
     for choice in "${choices[@]}"; do
         if [ "${selected_choices[$i]}" = "1" ]; then
-            echo "\"${choices[$i]}\""
+            printf "\"${choices[$i]}\""
         fi
         ((i++))
     done
