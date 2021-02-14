@@ -42,35 +42,33 @@ print_result() {
     i=0
     for choice in "${choices[@]}"; do
         if [ "${selected_choices[$i]}" = "1" ]; then
-            printf "%s\n" "\"${choices[$i]}\""
+            if [ "${quote}" = 1 ]; then
+                printf "%s\n" "\"${choices[$i]}\""
+            else
+                printf "%s\n" "${choices[$i]}"
+            fi
         fi
         ((i++))
     done
 }
 
 print_help() {
-    echo "placeholder"
+    printf "
+Usage: menuify [OPTIONS]\n
+Create interactive text-based menus\n
+Menu choices are read in from STDIN. The selected choice(s) are printed to STDOUT.\n
+Additional options
+  --no-clear      don't clear terminal screen
+  --no-color      don't output color codes
+  --quote         surround result with quotes\n"
     exit 0
 }
-
-choices=()
-selected_choices=()
-
-# Load options from stdin
-while IFS='$\n' read -r line; do
-    choices+=( "${line}" )
-    selected_choices+=( 0 )
-done
-
-# Reset stdin
-exec 6<&0
-exec 0</dev/tty
 
 # Menuify Options
 no_clear=0
 no_color=0
 multi_select=0
-confirm=0
+quote=0
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -82,14 +80,28 @@ while [ $# -gt 0 ]; do
         no_clear=1
     elif [ "$1" = "--no-color" ]; then
         no_color=1
+    elif [ "$1" = "--quote" ]; then
+        quote=0
     fi
 
     shift
 done
 
-if [ "${#choices[@]}" = "0" ]; then
-    print_help
-fi
+choices=()
+selected_choices=()
+
+# Load options from stdin
+while IFS='$\n' read -r line; do
+    choices+=( "${line}" )
+    selected_choices+=( 0 )
+done
+
+# Print help if choices are empty
+[ "${#choices[@]}" = "0" ] && print_help
+
+# Reset stdin
+exec 6<&0
+exec 0</dev/tty
 
 while true; do
     print_menu
