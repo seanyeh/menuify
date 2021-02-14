@@ -72,7 +72,7 @@ quote=0
 
 # Parse arguments
 while [ $# -gt 0 ]; do
-    if [ "$1" = "--help" ]; then
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
         print_help
     elif [ "$1" = "--multi" ]; then
         multi_select=1
