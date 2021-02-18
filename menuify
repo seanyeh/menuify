@@ -60,7 +60,7 @@ Menu choices are read in from STDIN. The selected choice(s) are printed to STDOU
 Additional options
   --no-clear      don't clear terminal screen
   --no-color      don't output color codes
-  --quote         surround result with quotes\n"
+  --quote         surround result with quotes\n" 1>&2
     exit 0
 }
 
